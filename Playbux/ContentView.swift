@@ -10,19 +10,19 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var sessions: [Session]
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(items) { item in
+                ForEach(sessions) { session in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        Text("Session: \(session.name)")
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text(session.name)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteSessions)
             }
 #if os(macOS)
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
@@ -34,27 +34,27 @@ struct ContentView: View {
                 }
 #endif
                 ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: addSession) {
+                        Label("Add Session", systemImage: "plus")
                     }
                 }
             }
         } detail: {
-            Text("Select an item")
+            Text("Select a session")
         }
     }
 
-    private func addItem() {
+    private func addSession() {
         withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+            let newSession = Session(name: "New Game")
+            modelContext.insert(newSession)
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteSessions(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(sessions[index])
             }
         }
     }
@@ -62,5 +62,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: Session.self, inMemory: true)
 }

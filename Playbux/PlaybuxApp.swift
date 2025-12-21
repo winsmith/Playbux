@@ -12,7 +12,12 @@ import SwiftData
 struct PlaybuxApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Session.self,
+            Player.self,
+            ResourceType.self,
+            PlayerBalance.self,
+            BankBalance.self,
+            Transaction.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
