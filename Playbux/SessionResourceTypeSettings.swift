@@ -18,11 +18,17 @@ struct SessionResourceTypeSettings: View {
             }
 
             Section {
-                TextField("Initial Bank amount", value: $resourceType.initialBankAmount, format: .number)
-                    .keyboardType(.numberPad)
                 TextField("Initial Player amount", value: $resourceType.initialPlayerAmount, format: .number)
                     .keyboardType(.numberPad)
             }
+            header: { Text("Startbetrag pro Spieler*in") }
+
+            Section {
+                TextField("Initial Bank amount", value: $resourceType.initialBankAmount, format: .number)
+                    .keyboardType(.numberPad)
+            }
+            header: { Text("Betrag in der Bank") }
+            footer: { Text("Kann auch leer sein, dann hat die Bank unendlich Geld") }
         }
     }
 }

@@ -10,22 +10,40 @@ import SwiftUI
 struct SessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var session: Session
+    @State private var isShowingDialog = false
 
     var body: some View {
         List {
-            Section {
-                ForEach(session.players) { player in
-                    NavigationLink {
-                        PlayerBalanceView(player: player)
-                    } label: {
-                        Text(player.name)
+            if session.isStarted {
+                Section {
+                    ForEach(session.players) { player in
+                        NavigationLink {
+                            PlayerBalanceView(player: player)
+                        } label: {
+                            Text(player.name)
+                        }
                     }
                 }
+                header: { Text("Spieler*innen") }
             }
-            header: { Text("Spieler*innen") }
-
-            Section {
-                NavigationLink("Einstellungen", destination: SessionSettings(session: session))
+            else {
+                Section {
+                    NavigationLink("Einstellungen", destination: SessionSettings(session: session))
+                }
+                Button("Spiel starten") {
+                    isShowingDialog = true
+                }
+                .confirmationDialog(
+                    "Spiel wirklich starten? Danach können die Einstellungen nicht mehr geändert werden.",
+                    isPresented: $isShowingDialog
+                ) {
+                    Button("Spiel wirklich starten", role: .destructive) {
+                        session.startSession()
+                    }
+                    Button("Abbrechen", role: .cancel) {
+                        isShowingDialog = false
+                    }
+                }
             }
         }
         .navigationTitle(session.name)
