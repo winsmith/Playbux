@@ -11,6 +11,8 @@ struct PlayerBalanceView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var player: Player
 
+    @State var showNewTransactionView = false
+
     var body: some View {
         List {
             Section {
@@ -21,16 +23,16 @@ struct PlayerBalanceView: View {
             header: { Text("Kontostände") }
 
             Section {
+                NavigationLink("Überweisung", destination: NewTransactionView(showView: $showNewTransactionView, fromPlayer: player), isActive: $showNewTransactionView)
+            }
+            header: { Text("Neu") }
+
+            Section {
                 ForEach(player.session?.transactions ?? []) { transaction in
                     Text(transaction.summary)
                 }
             }
             header: { Text("Transaktionen") }
-
-            Section {
-                NavigationLink("Überweisung", destination: Text("ueeeebereweisung"))
-            }
-            header: { Text("Neu") }
         }
         .navigationTitle(player.name)
     }
