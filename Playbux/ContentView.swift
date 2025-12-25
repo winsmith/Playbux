@@ -5,19 +5,19 @@
 //  Created by Daniel Jilg on 21.12.25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var sessions: [Session]
 
     var body: some View {
-        NavigationSplitView {
+        NavigationView {
             List {
                 ForEach(sessions) { session in
                     NavigationLink {
-                        Text("Session: \(session.name)")
+                        SessionView(session: session)
                     } label: {
                         Text(session.name)
                     }
@@ -39,9 +39,7 @@ struct ContentView: View {
                     }
                 }
             }
-        } detail: {
-            Text("Select a session")
-        }
+        } 
     }
 
     private func addSession() {

@@ -5,8 +5,8 @@
 //  Created by Daniel Jilg on 21.12.25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct PlaybuxApp: App {
