@@ -12,11 +12,22 @@ struct SessionView: View {
     @Bindable var session: Session
 
     var body: some View {
+        List {
+            Section {
+                ForEach(session.players) { player in
+                    NavigationLink {
+                        PlayerBalanceView(player: player)
+                    } label: {
+                        Text(player.name)
+                    }
+                }
+            }
+            header: { Text("Spieler*innen") }
 
-            List {
+            Section {
                 NavigationLink("Einstellungen", destination: SessionSettings(session: session))
             }
-            .navigationTitle(session.name)
-
+        }
+        .navigationTitle(session.name)
     }
 }
