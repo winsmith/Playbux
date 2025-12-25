@@ -18,7 +18,7 @@ struct SessionSettings: View {
                     .textContentType(.name)
             }
             NavigationLink("Players", destination: SessionPlayersSettings(session: session))
-            NavigationLink("Resourcen", destination: SessionResourseSettings())
+            NavigationLink("Resourcen", destination: SessionResourcesSettings(session: session))
 
         }
     }

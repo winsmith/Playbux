@@ -4,7 +4,7 @@ import SwiftData
 @Model
 final class ResourceType {
     var name: String
-    var emoji: String?
+    var emoji: String
     var initialBankAmount: Int?
     var initialPlayerAmount: Int
     var displayOrder: Int
@@ -19,7 +19,7 @@ final class ResourceType {
 
     init(
         name: String,
-        emoji: String? = nil,
+        emoji: String = "💰",
         initialBankAmount: Int? = nil,
         initialPlayerAmount: Int = 0,
         displayOrder: Int = 0
@@ -33,10 +33,7 @@ final class ResourceType {
 
     /// Display name with optional emoji prefix.
     var displayName: String {
-        if let emoji = emoji {
-            return "\(emoji) \(name)"
-        }
-        return name
+        return "\(emoji) \(name)"
     }
 
     /// Returns true if the bank has the requested amount available (or is infinite).
