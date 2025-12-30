@@ -133,7 +133,7 @@ struct NewTransactionView: View {
                     if resourceTypes.count > 1 {
                         Picker(selection: $resourceType) {
                             ForEach(resourceTypes, id: \.self) { type in
-                                Text(type.displayName).tag(type)
+                                Text(type.name).tag(type)
                             }
                         } label: {
                             EmptyView()
@@ -141,7 +141,7 @@ struct NewTransactionView: View {
                         .pickerStyle(.menu)
                         .labelsHidden()
                     } else {
-                        Text(resourceType.displayName)
+                        Text(resourceType.name)
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }

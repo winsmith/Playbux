@@ -7,6 +7,53 @@
 
 import SwiftUI
 
+struct TransactionRow: View {
+    let transaction: Transaction
+    let player: Player
+
+    private var isOutgoing: Bool {
+        transaction.fromPlayer == player
+    }
+
+    private var otherPartyName: String {
+        if isOutgoing {
+            return transaction.toPlayer?.name ?? String(localized: "bank")
+        } else {
+            return transaction.fromPlayer?.name ?? String(localized: "bank")
+        }
+    }
+
+    private var displayAmount: String {
+        if isOutgoing {
+            return "-\(transaction.amount)"
+        } else {
+            return "+\(transaction.amount)"
+        }
+    }
+
+    private var amountColor: Color {
+        isOutgoing ? .red : .green
+    }
+
+    var body: some View {
+        HStack {
+            Text(otherPartyName)
+                .font(.body)
+
+            Spacer()
+
+            HStack(spacing: 4) {
+                Text(displayAmount)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                Text(transaction.resourceType?.emoji ?? "")
+                    .font(.system(size: 18))
+            }
+            .foregroundStyle(amountColor)
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 struct PlayerBalanceView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var player: Player
@@ -22,26 +69,41 @@ struct PlayerBalanceView: View {
         List {
             Section {
                 ForEach(player.balances) { balance in
-                    Text("\(balance.amount) \(balance.resourceType?.displayName ?? "")")
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text("\(balance.amount)")
+                            .font(.system(size: 48, weight: .bold, design: .rounded))
+
+                        Text(balance.resourceType?.emoji ?? "")
+                            .font(.system(size: 36))
+
+                        Spacer()
+
+                        Text(balance.resourceType?.name ?? "")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 8)
                 }
             }
             header: { Text("balances") }
 
             Section {
-                Button(String(localized: "transaction")) {
-                    showNewTransactionSheet = true
-                }
-            }
-            header: { Text("new") }
-
-            Section {
                 ForEach(playerTransactions) { transaction in
-                    Text(transaction.summary)
+                    TransactionRow(transaction: transaction, player: player)
                 }
             }
             header: { Text("transactions") }
         }
         .navigationTitle(player.name)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showNewTransactionSheet = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
         .sheet(isPresented: $showNewTransactionSheet) {
             NewTransactionView(fromPlayer: player)
         }
