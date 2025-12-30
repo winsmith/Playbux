@@ -11,6 +11,9 @@
         }
       }
     },
+    "0" : {
+
+    },
     "add_player" : {
       "localizations" : {
         "de" : {
@@ -60,6 +63,7 @@
       }
     },
     "amount" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -204,6 +208,7 @@
       }
     },
     "currency" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -380,6 +385,7 @@
       }
     },
     "optional_note" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -429,6 +435,7 @@
       }
     },
     "recipient" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -445,6 +452,7 @@
       }
     },
     "resource" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

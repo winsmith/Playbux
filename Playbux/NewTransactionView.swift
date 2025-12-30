@@ -51,57 +51,114 @@ struct NewTransactionView: View {
         self._toPlayer = State(initialValue: session.players.first)
     }
 
+    private var fromName: String {
+        fromPlayer?.name ?? String(localized: "bank")
+    }
+
+    private var isSubmitDisabled: Bool {
+        amount <= 0 || (fromPlayer == nil && toPlayer == nil)
+    }
+
+    /// Options for the recipient picker - includes Bank option only when fromPlayer is set, excludes fromPlayer
+    private var recipientOptions: [Player?] {
+        let availablePlayers = players.filter { $0 != fromPlayer }
+        if fromPlayer != nil {
+            return [nil] + availablePlayers
+        } else {
+            return availablePlayers.map { $0 as Player? }
+        }
+    }
+
+    private func recipientName(_ player: Player?) -> String {
+        player?.name ?? String(localized: "bank")
+    }
+
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    if let fromPlayer {
-                        Text(fromPlayer.name)
+            VStack(spacing: 24) {
+                // From -> To row
+                HStack(spacing: 16) {
+                    // From
+                    VStack(spacing: 4) {
+                        Text(fromName)
+                            .font(.headline)
+                            .lineLimit(1)
+                        Text("from")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    // Arrow
+                    Image(systemName: "arrow.right")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+
+                    // To (picker styled as inline menu)
+                    VStack(spacing: 4) {
+                        Picker(selection: $toPlayer) {
+                            ForEach(recipientOptions, id: \.self) { player in
+                                Text(recipientName(player)).tag(player)
+                            }
+                        } label: {
+                            EmptyView()
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+
+                        Text("to")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding()
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+
+                // Amount input
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        TextField("0", value: $amount, format: .number)
+                            .font(.system(size: 64, weight: .bold, design: .rounded))
+                            .multilineTextAlignment(.trailing)
+                            .minimumScaleFactor(0.5)
+                            #if os(iOS)
+                            .keyboardType(.numberPad)
+                            #endif
+
+                        Text(resourceType.emoji)
+                            .font(.system(size: 48))
+                    }
+
+                    if resourceTypes.count > 1 {
+                        Picker(selection: $resourceType) {
+                            ForEach(resourceTypes, id: \.self) { type in
+                                Text(type.displayName).tag(type)
+                            }
+                        } label: {
+                            EmptyView()
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
                     } else {
-                        Text("bank")
+                        Text(resourceType.displayName)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
                     }
                 }
-                header: { Text("from") }
+                .padding()
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
 
-                Section {
-                    Picker(String(localized: "recipient"), selection: $toPlayer) {
-                        if fromPlayer != nil {
-                            Text("bank").tag(nil as Player?)
-                            Divider()
-                        }
-                        ForEach(players, id: \.self) { player in
-                            Text(player.name).tag(player as Player?)
-                        }
-                    }
-                }
-                header: { Text("to") }
+                // Optional note
+                TextField("note", text: $note)
+                    .textFieldStyle(.roundedBorder)
 
-                Section {
-                    Picker(String(localized: "currency"), selection: $resourceType) {
-                        ForEach(resourceTypes, id: \.self) { resourceType in
-                            Text(resourceType.name).tag(resourceType)
-                        }
-                    }
-                }
-                header: { Text("resource") }
+                Spacer()
 
-                Section {
-                    TextField("amount", value: $amount, format: .number)
-                    #if os(iOS)
-                        .keyboardType(.numberPad)
-                    #endif
-                }
-                header: { Text("amount") }
-
-                Section {
-                    TextField("note", text: $note)
-                }
-                header: { Text("optional_note") }
-
-                Button("submit") {
+                // Submit button
+                Button {
                     let savedNote: String? = note.isEmpty ? nil : note
 
-                    // save transaction
                     session.createNewTransaction(
                         from: fromPlayer,
                         to: toPlayer,
@@ -110,11 +167,18 @@ struct NewTransactionView: View {
                         note: savedNote
                     )
 
-                    // dismiss sheet
                     dismiss()
+                } label: {
+                    Text("submit")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
                 }
-                .disabled(amount <= 0 || (fromPlayer == nil && toPlayer == nil))
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .disabled(isSubmitDisabled)
             }
+            .padding()
             .navigationTitle(Text("new_transaction"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
