@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NewTransactionView: View {
-    @Binding var showView: Bool
+    @Environment(\.dismiss) private var dismiss
 
     @Bindable var fromPlayer: Player
 
@@ -59,7 +59,6 @@ struct NewTransactionView: View {
             header: { Text("Optionale Notiz") }
 
             Button("Abschicken") {
-                print("Abschicken")
                 guard let resourceType else { return }
 
                 var savedNote: String? = nil
@@ -68,7 +67,7 @@ struct NewTransactionView: View {
                     savedNote = note
                 }
 
-                // überweisung speichern
+                // save transaction
                 fromPlayer.session?.createNewTransaction(
                     from: fromPlayer,
                     to: toPlayer,
@@ -77,8 +76,8 @@ struct NewTransactionView: View {
                     note: savedNote
                 )
 
-                // navigation zurück
-                showView = false
+                // navigation back
+                dismiss()
             }
             .disabled(resourceType == nil && amount <= 0)
         }
