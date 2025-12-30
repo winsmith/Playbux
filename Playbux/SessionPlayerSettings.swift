@@ -12,7 +12,7 @@ struct SessionPlayerSettings: View {
 
     var body: some View {
         Form {
-            TextField("Name", text: $player.name)
+            TextField("name", text: $player.name)
                 .textContentType(.name)
         }
     }

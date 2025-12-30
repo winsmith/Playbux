@@ -18,19 +18,19 @@ struct PlayerBalanceView: View {
                     Text("\(balance.amount) \(balance.resourceType?.displayName ?? "")")
                 }
             }
-            header: { Text("Kontostände") }
+            header: { Text("balances") }
 
             Section {
-                NavigationLink("Überweisung", destination: NewTransactionView(fromPlayer: player))
+                NavigationLink(String(localized: "transaction"), destination: NewTransactionView(fromPlayer: player))
             }
-            header: { Text("Neu") }
+            header: { Text("new") }
 
             Section {
                 ForEach(player.session?.transactions ?? []) { transaction in
                     Text(transaction.summary)
                 }
             }
-            header: { Text("Transaktionen") }
+            header: { Text("transactions") }
         }
         .navigationTitle(player.name)
     }

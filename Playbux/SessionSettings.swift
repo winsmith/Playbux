@@ -14,11 +14,11 @@ struct SessionSettings: View {
     var body: some View {
         Form {
             Section {
-                TextField("Name", text: $session.name)
+                TextField("name", text: $session.name)
                     .textContentType(.name)
             }
-            NavigationLink("Players", destination: SessionPlayersSettings(session: session))
-            NavigationLink("Resourcen", destination: SessionResourcesSettings(session: session))
+            NavigationLink(String(localized: "players"), destination: SessionPlayersSettings(session: session))
+            NavigationLink(String(localized: "resources"), destination: SessionResourcesSettings(session: session))
 
         }
     }

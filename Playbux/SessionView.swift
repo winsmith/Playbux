@@ -24,23 +24,23 @@ struct SessionView: View {
                         }
                     }
                 }
-                header: { Text("Spieler*innen") }
+                header: { Text("players") }
             }
             else {
                 Section {
-                    NavigationLink("Einstellungen", destination: SessionSettings(session: session))
+                    NavigationLink(String(localized: "settings"), destination: SessionSettings(session: session))
                 }
-                Button("Spiel starten") {
+                Button("start_game") {
                     isShowingDialog = true
                 }
                 .confirmationDialog(
-                    "Spiel wirklich starten? Danach können die Einstellungen nicht mehr geändert werden.",
+                    Text("confirm_start_game"),
                     isPresented: $isShowingDialog
                 ) {
-                    Button("Spiel wirklich starten", role: .destructive) {
+                    Button("confirm_start_game_button", role: .destructive) {
                         session.startSession()
                     }
-                    Button("Abbrechen", role: .cancel) {
+                    Button("cancel", role: .cancel) {
                         isShowingDialog = false
                     }
                 }

@@ -22,11 +22,11 @@ struct NewTransactionView: View {
             Section {
                 Text(fromPlayer.name)
             }
-            header: { Text("Von") }
+            header: { Text("from") }
 
             Section {
-                Picker("Empfänger", selection: $toPlayer) {
-                    Text("Bank").tag(nil as Player?)
+                Picker(String(localized: "recipient"), selection: $toPlayer) {
+                    Text("bank").tag(nil as Player?)
                     Divider()
                     ForEach(fromPlayer.session?.players ?? [], id: \.self) { player in
                         // FIXME: Picker: the selection "Optional(Playbux.Player)" is invalid and does not have an associated tag, this will give undefined results.
@@ -34,31 +34,33 @@ struct NewTransactionView: View {
                     }
                 }
             }
-            header: { Text("An") }
+            header: { Text("to") }
 
             Section {
-                Picker("Währung", selection: $resourceType) {
-                    Text("Bitte Währung wählen").tag(nil as ResourceType?)
+                Picker(String(localized: "currency"), selection: $resourceType) {
+                    Text("please_select_currency").tag(nil as ResourceType?)
                     Divider()
                     ForEach(fromPlayer.session?.resourceTypes ?? [], id: \.self) { resourceType in
                         Text(resourceType.name).tag(resourceType)
                     }
                 }
             }
-            header: { Text("Resource") }
+            header: { Text("resource") }
 
             Section {
-                TextField("Betrag", value: $amount, format: .number)
+                TextField("amount", value: $amount, format: .number)
+                #if os(iOS)
                     .keyboardType(.numberPad)
+                #endif
             }
-            header: { Text("Betrag") }
+            header: { Text("amount") }
 
             Section {
-                TextField("Notiz", text: $note)
+                TextField("note", text: $note)
             }
-            header: { Text("Optionale Notiz") }
+            header: { Text("optional_note") }
 
-            Button("Abschicken") {
+            Button("submit") {
                 guard let resourceType else { return }
 
                 var savedNote: String? = nil
@@ -81,6 +83,6 @@ struct NewTransactionView: View {
             }
             .disabled(resourceType == nil && amount <= 0)
         }
-        .navigationTitle("Neue Überweisung")
+        .navigationTitle(Text("new_transaction"))
     }
 }

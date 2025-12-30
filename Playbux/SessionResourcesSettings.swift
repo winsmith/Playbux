@@ -23,7 +23,7 @@ struct SessionResourcesSettings: View {
             }
             .onDelete(perform: deleteResourceType)
         }
-        .navigationTitle("Resources")
+        .navigationTitle(Text("resources"))
         .toolbar {
 #if os(iOS)
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -32,7 +32,7 @@ struct SessionResourcesSettings: View {
 #endif
             ToolbarItem {
                 Button(action: addResourceType) {
-                    Label("Add Resource Type", systemImage: "plus")
+                    Label(String(localized: "add_resource_type"), systemImage: "plus")
                 }
             }
         }
@@ -40,7 +40,7 @@ struct SessionResourcesSettings: View {
 
     private func addResourceType() {
         withAnimation {
-            let newResoureceType = ResourceType(name: "Mäuse")
+            let newResoureceType = ResourceType(name: String(localized: "default_resource_name"))
             session.resourceTypes.append(newResoureceType)
         }
     }

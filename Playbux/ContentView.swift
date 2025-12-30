@@ -35,7 +35,7 @@ struct ContentView: View {
 #endif
                 ToolbarItem {
                     Button(action: addSession) {
-                        Label("Add Session", systemImage: "plus")
+                        Label(String(localized: "add_session"), systemImage: "plus")
                     }
                 }
             }
@@ -44,7 +44,7 @@ struct ContentView: View {
 
     private func addSession() {
         withAnimation {
-            let newSession = Session(name: "New Game")
+            let newSession = Session(name: String(localized: "new_game"))
             modelContext.insert(newSession)
         }
     }

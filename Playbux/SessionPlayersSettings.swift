@@ -23,7 +23,7 @@ struct SessionPlayersSettings: View {
             }
             .onDelete(perform: deletePlayer)
         }
-        .navigationTitle("Players")
+        .navigationTitle(Text("players"))
         .toolbar {
 #if os(iOS)
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -32,7 +32,7 @@ struct SessionPlayersSettings: View {
 #endif
             ToolbarItem {
                 Button(action: addPlayer) {
-                    Label("Add Player", systemImage: "plus")
+                    Label(String(localized: "add_player"), systemImage: "plus")
                 }
             }
         }
@@ -40,7 +40,7 @@ struct SessionPlayersSettings: View {
 
     private func addPlayer() {
         withAnimation {
-            let newPlayer = Player(name: "New Player")
+            let newPlayer = Player(name: String(localized: "new_player"))
             session.players.append(newPlayer)
         }
     }

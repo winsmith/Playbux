@@ -13,22 +13,26 @@ struct SessionResourceTypeSettings: View {
     var body: some View {
         Form {
             Section {
-                TextField("Name", text: $resourceType.name)
-                TextField("Emoji", text: $resourceType.emoji)
+                TextField("name", text: $resourceType.name)
+                TextField("emoji", text: $resourceType.emoji)
             }
 
             Section {
-                TextField("Initial Player amount", value: $resourceType.initialPlayerAmount, format: .number)
+                TextField("initial_player_amount", value: $resourceType.initialPlayerAmount, format: .number)
+                #if os(iOS)
                     .keyboardType(.numberPad)
+                #endif
             }
-            header: { Text("Startbetrag pro Spieler*in") }
+            header: { Text("initial_player_amount") }
 
             Section {
-                TextField("Initial Bank amount", value: $resourceType.initialBankAmount, format: .number)
+                TextField("bank_amount", value: $resourceType.initialBankAmount, format: .number)
+                #if os(iOS)
                     .keyboardType(.numberPad)
+                #endif
             }
-            header: { Text("Betrag in der Bank") }
-            footer: { Text("Kann auch leer sein, dann hat die Bank unendlich Geld") }
+            header: { Text("bank_amount") }
+            footer: { Text("bank_amount_footer") }
         }
     }
 }
