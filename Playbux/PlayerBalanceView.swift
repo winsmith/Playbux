@@ -12,6 +12,12 @@ struct PlayerBalanceView: View {
     @Bindable var player: Player
     @State private var showNewTransactionSheet = false
 
+    private var playerTransactions: [Transaction] {
+        (player.session?.transactions ?? []).filter { transaction in
+            transaction.fromPlayer == player || transaction.toPlayer == player
+        }
+    }
+
     var body: some View {
         List {
             Section {
@@ -29,7 +35,7 @@ struct PlayerBalanceView: View {
             header: { Text("new") }
 
             Section {
-                ForEach(player.session?.transactions ?? []) { transaction in
+                ForEach(playerTransactions) { transaction in
                     Text(transaction.summary)
                 }
             }
