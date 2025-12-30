@@ -10,6 +10,7 @@ import SwiftUI
 struct PlayerBalanceView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var player: Player
+    @State private var showNewTransactionSheet = false
 
     var body: some View {
         List {
@@ -21,7 +22,9 @@ struct PlayerBalanceView: View {
             header: { Text("balances") }
 
             Section {
-                NavigationLink(String(localized: "transaction"), destination: NewTransactionView(fromPlayer: player))
+                Button(String(localized: "transaction")) {
+                    showNewTransactionSheet = true
+                }
             }
             header: { Text("new") }
 
@@ -33,5 +36,8 @@ struct PlayerBalanceView: View {
             header: { Text("transactions") }
         }
         .navigationTitle(player.name)
+        .sheet(isPresented: $showNewTransactionSheet) {
+            NewTransactionView(fromPlayer: player)
+        }
     }
 }
