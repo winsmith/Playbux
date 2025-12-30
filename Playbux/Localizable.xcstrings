@@ -139,6 +139,22 @@
         }
       }
     },
+    "bank_payout" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auszahlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bank Payout"
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "de" : {
@@ -396,6 +412,7 @@
       }
     },
     "please_select_currency" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

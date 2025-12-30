@@ -11,6 +11,7 @@ struct SessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var session: Session
     @State private var isShowingDialog = false
+    @State private var showBankPayoutSheet = false
 
     var body: some View {
         List {
@@ -25,6 +26,13 @@ struct SessionView: View {
                     }
                 }
                 header: { Text("players") }
+
+                Section {
+                    Button("bank_payout") {
+                        showBankPayoutSheet = true
+                    }
+                }
+                header: { Text("bank") }
             }
             else {
                 Section {
@@ -47,5 +55,8 @@ struct SessionView: View {
             }
         }
         .navigationTitle(session.name)
+        .sheet(isPresented: $showBankPayoutSheet) {
+            NewTransactionView(session: session)
+        }
     }
 }
