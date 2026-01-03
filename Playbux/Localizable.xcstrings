@@ -212,6 +212,22 @@
         }
       }
     },
+    "copy_from_game" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von Spiel kopieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy from game"
+          }
+        }
+      }
+    },
     "create_session" : {
       "localizations" : {
         "de" : {
@@ -246,6 +262,7 @@
       }
     },
     "default_resource_name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

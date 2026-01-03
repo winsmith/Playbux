@@ -35,6 +35,60 @@ final class Session {
         self.isStarted = true
     }
 
+    /// Pool of fun example resource types for random selection
+    private static let exampleResourceTypes: [(name: String, emoji: String)] = [
+        // Food & Drink
+        ("Pizza", "🍕"),
+        ("Cookies", "🍪"),
+        ("Tacos", "🌮"),
+        ("Coffee", "☕"),
+        ("Donuts", "🍩"),
+        ("Beer", "🍺"),
+        // Fantasy/RPG
+        ("Gold", "🪙"),
+        ("Gems", "💎"),
+        ("Mana", "✨"),
+        ("XP", "⭐"),
+        ("Potions", "🧪"),
+        ("Souls", "👻"),
+        // Sci-Fi
+        ("Credits", "💳"),
+        ("Fuel", "⛽"),
+        ("Energy", "⚡"),
+        ("Ore", "🪨"),
+        // Silly/Modern
+        ("Clout", "📈"),
+        ("Vibes", "🌊"),
+        ("Karma", "☯️"),
+        ("Schmeckles", "🥒"),
+        ("Exposure", "📸"),
+        // Seasonal
+        ("Candy", "🍬"),
+        ("Presents", "🎁"),
+        ("Eggs", "🥚"),
+        // Games
+        ("Chips", "🎰"),
+        ("Points", "🎯"),
+        ("Lives", "❤️"),
+        ("Coins", "🟡"),
+        // Catan
+        ("Brick", "🧱"),
+        ("Lumber", "🪵"),
+        ("Wool", "🐑"),
+        ("Grain", "🌾"),
+        // Bonus
+        ("Bucks", "🦌"),
+    ]
+
+    /// Returns the next example resource type - "Bucks" first, then random
+    func nextExampleResourceType() -> ResourceType {
+        if resourceTypes.isEmpty {
+            return ResourceType(name: "Bucks", emoji: "💰")
+        }
+        let example = Self.exampleResourceTypes.randomElement()!
+        return ResourceType(name: example.name, emoji: example.emoji)
+    }
+
     /// Add a player to the session, creating their balances if the game has started
     func addPlayer(_ player: Player) {
         players.append(player)

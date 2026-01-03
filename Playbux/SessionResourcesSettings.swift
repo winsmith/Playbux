@@ -40,8 +40,8 @@ struct SessionResourcesSettings: View {
 
     private func addResourceType() {
         withAnimation {
-            let newResoureceType = ResourceType(name: String(localized: "default_resource_name"))
-            session.resourceTypes.append(newResoureceType)
+            let newResourceType = session.nextExampleResourceType()
+            session.resourceTypes.append(newResourceType)
         }
     }
 
