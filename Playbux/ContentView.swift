@@ -12,14 +12,22 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var sessions: [Session]
 
+    @State private var navigationPath = NavigationPath()
+
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $navigationPath) {
             List {
                 ForEach(sessions) { session in
-                    NavigationLink {
-                        SessionView(session: session)
-                    } label: {
-                        Text(session.name)
+                    NavigationLink(value: session) {
+                        HStack {
+                            Text(session.name)
+                            Spacer()
+                            if !session.isStarted {
+                                Text("draft")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
                 .onDelete(perform: deleteSessions)
@@ -27,6 +35,13 @@ struct ContentView: View {
 #if os(macOS)
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
 #endif
+            .navigationDestination(for: Session.self) { session in
+                if session.isStarted {
+                    SessionView(session: session)
+                } else {
+                    CreateSessionView(session: session)
+                }
+            }
             .toolbar {
 #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -39,13 +54,14 @@ struct ContentView: View {
                     }
                 }
             }
-        } 
+        }
     }
 
     private func addSession() {
         withAnimation {
             let newSession = Session(name: String(localized: "new_game"))
             modelContext.insert(newSession)
+            navigationPath.append(newSession)
         }
     }
 

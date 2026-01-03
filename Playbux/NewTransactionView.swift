@@ -156,7 +156,7 @@ struct NewTransactionView: View {
                 Spacer()
 
                 // Submit button
-                Button {
+                BigSubmitButton(title: "submit", isDisabled: isSubmitDisabled) {
                     let savedNote: String? = note.isEmpty ? nil : note
 
                     session.createNewTransaction(
@@ -168,15 +168,7 @@ struct NewTransactionView: View {
                     )
 
                     dismiss()
-                } label: {
-                    Text("submit")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(isSubmitDisabled)
             }
             .padding()
             .navigationTitle(Text("new_transaction"))

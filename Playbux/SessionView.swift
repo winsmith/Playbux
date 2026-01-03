@@ -5,58 +5,59 @@
 //  Created by Daniel Jilg on 25.12.25.
 //
 
+import SwiftData
 import SwiftUI
 
 struct SessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var session: Session
-    @State private var isShowingDialog = false
     @State private var showBankPayoutSheet = false
+    @State private var showAddPlayerSheet = false
 
     var body: some View {
         List {
-            if session.isStarted {
-                Section {
-                    ForEach(session.players) { player in
-                        NavigationLink {
-                            PlayerBalanceView(player: player)
-                        } label: {
-                            Text(player.name)
-                        }
+            Section {
+                ForEach(session.players) { player in
+                    NavigationLink {
+                        PlayerBalanceView(player: player)
+                    } label: {
+                        Text(player.name)
                     }
                 }
-                header: { Text("players") }
-
-                Section {
-                    Button("bank_payout") {
-                        showBankPayoutSheet = true
-                    }
-                }
-                header: { Text("bank") }
+                .onDelete(perform: deletePlayers)
             }
-            else {
-                Section {
-                    NavigationLink(String(localized: "settings"), destination: SessionSettings(session: session))
+            header: { Text("players") }
+
+            Section {
+                Button("bank_payout") {
+                    showBankPayoutSheet = true
                 }
-                Button("start_game") {
-                    isShowingDialog = true
-                }
-                .confirmationDialog(
-                    Text("confirm_start_game"),
-                    isPresented: $isShowingDialog
-                ) {
-                    Button("confirm_start_game_button", role: .destructive) {
-                        session.startSession()
-                    }
-                    Button("cancel", role: .cancel) {
-                        isShowingDialog = false
-                    }
+            }
+            header: { Text("bank") }
+        }
+        .navigationTitle(session.name)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showAddPlayerSheet = true
+                } label: {
+                    Label(String(localized: "add_player"), systemImage: "person.badge.plus")
                 }
             }
         }
-        .navigationTitle(session.name)
         .sheet(isPresented: $showBankPayoutSheet) {
             NewTransactionView(session: session)
+        }
+        .sheet(isPresented: $showAddPlayerSheet) {
+            CreatePlayerView(session: session)
+        }
+    }
+
+    private func deletePlayers(offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                modelContext.delete(session.players[index])
+            }
         }
     }
 }

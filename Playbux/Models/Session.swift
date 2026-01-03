@@ -35,6 +35,22 @@ final class Session {
         self.isStarted = true
     }
 
+    /// Add a player to the session, creating their balances if the game has started
+    func addPlayer(_ player: Player) {
+        players.append(player)
+
+        if isStarted {
+            for resourceType in resourceTypes {
+                let newBalance = PlayerBalance(
+                    player: player,
+                    resourceType: resourceType,
+                    amount: resourceType.initialPlayerAmount
+                )
+                player.balances.append(newBalance)
+            }
+        }
+    }
+
     func createNewTransaction(from fromPlayer: Player?, to toPlayer: Player?, resourceType: ResourceType, amount: Int, note: String? = nil) {
         let myNewTransaction = Transaction(amount: amount, resourceType: resourceType, fromPlayer: fromPlayer, toPlayer: toPlayer, note: note, timestamp: Date.now)
         self.transactions.append(myNewTransaction)
