@@ -69,14 +69,16 @@ struct PlayerBalanceView: View {
         List {
             Section {
                 ForEach(player.balances) { balance in
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text("\(balance.amount)")
-                            .font(.system(size: 48, weight: .bold, design: .rounded))
+                    VStack(alignment: .trailing) {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Spacer()
 
-                        Text(balance.resourceType?.emoji ?? "")
-                            .font(.system(size: 36))
+                            Text("\(balance.amount)")
+                                .font(.system(size: 48, weight: .bold, design: .rounded))
 
-                        Spacer()
+                            Text(balance.resourceType?.emoji ?? "")
+                                .font(.system(size: 36))
+                        }
 
                         Text(balance.resourceType?.name ?? "")
                             .font(.subheadline)
