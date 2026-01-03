@@ -12,6 +12,7 @@ struct CreatePlayerView: View {
     var session: Session
 
     @State private var playerName: String = ""
+    @State private var playerEmoji: String = Player.emojiPool.randomElement()!
 
     private var isSubmitDisabled: Bool {
         playerName.trimmingCharacters(in: .whitespaces).isEmpty
@@ -21,8 +22,12 @@ struct CreatePlayerView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("player_name", text: $playerName)
-                        .textContentType(.name)
+                    HStack {
+                        TextField("emoji", text: $playerEmoji)
+                            .frame(width: 50)
+                        TextField("player_name", text: $playerName)
+                            .textContentType(.name)
+                    }
                 }
                 header: { Text("player_name") }
 
@@ -45,7 +50,7 @@ struct CreatePlayerView: View {
     }
 
     private func addPlayer() {
-        let newPlayer = Player(name: playerName)
+        let newPlayer = Player(name: playerName, emoji: playerEmoji)
         session.addPlayer(newPlayer)
     }
 }

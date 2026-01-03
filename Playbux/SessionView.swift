@@ -21,7 +21,7 @@ struct SessionView: View {
                     NavigationLink {
                         PlayerBalanceView(player: player)
                     } label: {
-                        Text(player.name)
+                        Text(player.displayName)
                     }
                 }
                 .onDelete(perform: deletePlayers)

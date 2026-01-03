@@ -96,7 +96,7 @@ struct PlayerBalanceView: View {
             }
             header: { Text("transactions") }
         }
-        .navigationTitle(player.name)
+        .navigationTitle(player.displayName)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {

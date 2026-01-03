@@ -52,7 +52,7 @@ struct NewTransactionView: View {
     }
 
     private var fromName: String {
-        fromPlayer?.name ?? String(localized: "bank")
+        fromPlayer?.displayName ?? String(localized: "bank")
     }
 
     private var isSubmitDisabled: Bool {
@@ -70,7 +70,7 @@ struct NewTransactionView: View {
     }
 
     private func recipientName(_ player: Player?) -> String {
-        player?.name ?? String(localized: "bank")
+        player?.displayName ?? String(localized: "bank")
     }
 
     var body: some View {
