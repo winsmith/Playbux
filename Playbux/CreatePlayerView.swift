@@ -13,6 +13,7 @@ struct CreatePlayerView: View {
 
     @State private var playerName: String = ""
     @State private var playerEmoji: String = Player.emojiPool.randomElement()!
+    @State private var playerColor: Color = Color(hex: Player.colorPool.randomElement()!)!
 
     private var isSubmitDisabled: Bool {
         playerName.trimmingCharacters(in: .whitespaces).isEmpty
@@ -28,6 +29,7 @@ struct CreatePlayerView: View {
                         TextField("player_name", text: $playerName)
                             .textContentType(.name)
                     }
+                    ColorPicker("color", selection: $playerColor, supportsOpacity: false)
                 }
                 header: { Text("player_name") }
 
@@ -50,7 +52,8 @@ struct CreatePlayerView: View {
     }
 
     private func addPlayer() {
-        let newPlayer = Player(name: playerName, emoji: playerEmoji)
+        let colorHex = playerColor.toHex() ?? "#007AFF"
+        let newPlayer = Player(name: playerName, emoji: playerEmoji, displayOrder: 0, colorHex: colorHex)
         session.addPlayer(newPlayer)
     }
 }

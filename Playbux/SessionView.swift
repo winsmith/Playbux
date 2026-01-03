@@ -21,7 +21,12 @@ struct SessionView: View {
                     NavigationLink {
                         PlayerBalanceView(player: player)
                     } label: {
-                        Text(player.displayName)
+                        HStack(spacing: 12) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(player.color)
+                                .frame(width: 6)
+                            Text(player.displayName)
+                        }
                     }
                 }
                 .onDelete(perform: deletePlayers)

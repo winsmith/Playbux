@@ -97,6 +97,10 @@ struct PlayerBalanceView: View {
             header: { Text("transactions") }
         }
         .navigationTitle(player.displayName)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            player.color
+                .frame(height: 8)
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {

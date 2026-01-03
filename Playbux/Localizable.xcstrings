@@ -178,6 +178,22 @@
         }
       }
     },
+    "color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color"
+          }
+        }
+      }
+    },
     "confirm_start_game" : {
       "extractionState" : "stale",
       "localizations" : {
