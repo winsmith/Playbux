@@ -65,6 +65,9 @@
         }
       }
     },
+    "After transaction" : {
+
+    },
     "amount" : {
       "extractionState" : "stale",
       "localizations" : {

@@ -73,6 +73,18 @@ struct NewTransactionView: View {
         player?.displayName ?? String(localized: "bank")
     }
 
+    private var amountAfterTransaction: Int {
+        guard let fromPlayer else {
+            return 0
+        }
+
+        guard let playerBalance = fromPlayer.balances.first(where: { $0.resourceType == resourceType })?.amount else {
+            return 0
+        }
+
+        return playerBalance - amount
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -122,9 +134,9 @@ struct NewTransactionView: View {
                             .font(.system(size: 64, weight: .bold, design: .rounded))
                             .multilineTextAlignment(.trailing)
                             .minimumScaleFactor(0.5)
-                            #if os(iOS)
+                        #if os(iOS)
                             .keyboardType(.numberPad)
-                            #endif
+                        #endif
 
                         Text(resourceType.emoji)
                             .font(.system(size: 48))
@@ -144,6 +156,14 @@ struct NewTransactionView: View {
                         Text(resourceType.name)
                             .font(.title3)
                             .foregroundStyle(.secondary)
+                    }
+
+                    if fromPlayer != nil {
+                        HStack {
+                            Text("After transaction").foregroundStyle(.secondary)
+                            Spacer()
+                            AmountView(resourceType: resourceType, amount: amountAfterTransaction)
+                        }
                     }
                 }
                 .padding()

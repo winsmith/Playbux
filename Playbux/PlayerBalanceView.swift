@@ -23,16 +23,12 @@ struct TransactionRow: View {
         }
     }
 
-    private var displayAmount: String {
+    private var amountFromBank: Int {
         if isOutgoing {
-            return "-\(transaction.amount)"
+            return -transaction.amount
         } else {
-            return "+\(transaction.amount)"
+            return transaction.amount
         }
-    }
-
-    private var amountColor: Color {
-        isOutgoing ? .red : .green
     }
 
     var body: some View {
@@ -43,13 +39,9 @@ struct TransactionRow: View {
 
                 Spacer()
 
-                HStack(spacing: 4) {
-                    Text(displayAmount)
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    Text(transaction.resourceType?.emoji ?? "")
-                        .font(.system(size: 18))
+                if let resourceType = transaction.resourceType {
+                    AmountView(resourceType: resourceType, amount: amountFromBank)
                 }
-                .foregroundStyle(amountColor)
             }
             .padding(.vertical, 4)
 
