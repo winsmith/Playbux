@@ -36,21 +36,29 @@ struct TransactionRow: View {
     }
 
     var body: some View {
-        HStack {
-            Text(otherPartyName)
-                .font(.body)
+        VStack(alignment: .leading) {
+            HStack {
+                Text(otherPartyName)
+                    .font(.body)
 
-            Spacer()
+                Spacer()
 
-            HStack(spacing: 4) {
-                Text(displayAmount)
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                Text(transaction.resourceType?.emoji ?? "")
-                    .font(.system(size: 18))
+                HStack(spacing: 4) {
+                    Text(displayAmount)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Text(transaction.resourceType?.emoji ?? "")
+                        .font(.system(size: 18))
+                }
+                .foregroundStyle(amountColor)
             }
-            .foregroundStyle(amountColor)
+            .padding(.vertical, 4)
+
+            if let note = transaction.note {
+                Text(note)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .padding(.vertical, 4)
     }
 }
 
