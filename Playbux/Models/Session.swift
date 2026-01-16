@@ -25,14 +25,14 @@ final class Session {
 
     /// Begin the game and create empty balances
     func startSession() {
-        for resourceType in self.resourceTypes {
-            for player in self.players {
+        for resourceType in resourceTypes {
+            for player in players {
                 let newBalance = PlayerBalance(player: player, resourceType: resourceType, amount: resourceType.initialPlayerAmount)
                 player.balances.append(newBalance)
             }
         }
 
-        self.isStarted = true
+        isStarted = true
     }
 
     /// Pool of fun example resource types for random selection
@@ -107,16 +107,16 @@ final class Session {
 
     func createNewTransaction(from fromPlayer: Player?, to toPlayer: Player?, resourceType: ResourceType, amount: Int, note: String? = nil) {
         let myNewTransaction = Transaction(amount: amount, resourceType: resourceType, fromPlayer: fromPlayer, toPlayer: toPlayer, note: note, timestamp: Date.now)
-        self.transactions.append(myNewTransaction)
+        transactions.append(myNewTransaction)
 
         fromPlayer?.balances.forEach { balance in
-            if balance.resourceType == resourceType {
+            if balance.resourceType?.id == resourceType.id {
                 balance.amount -= amount
             }
         }
 
         toPlayer?.balances.forEach { balance in
-            if balance.resourceType == resourceType {
+            if balance.resourceType?.id == resourceType.id {
                 balance.amount += amount
             }
         }
