@@ -13,9 +13,22 @@ struct ContentView: View {
     @Query private var sessions: [Session]
 
     @State private var navigationPath = NavigationPath()
+    
+    let layout = [
+        GridItem(.fixed(80)),
+        GridItem(.fixed(80)),
+        GridItem(.fixed(80))
+    ]
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
+            ScrollView {
+                LazyVGrid(columns: layout) {
+                    ForEach(sessions) { session in
+                        SessionPackageCell(session: session)
+                    }
+                }
+            }
             List {
                 ForEach(sessions) { session in
                     NavigationLink(value: session) {
