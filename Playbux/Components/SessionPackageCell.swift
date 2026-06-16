@@ -13,14 +13,12 @@ struct EmojiCircle: View {
     
     var body: some View  {
         ZStack {
-//            Circle()
-//                .fill(color?.opacity(0.9) ?? Color.white.opacity(0.5))
-//                .padding(1)
+            Circle()
+                .glassEffect(.regular.tint(color ?? .white.opacity(0.2)).interactive())
             Text(emoji)
                 .scaledToFill()
                 .minimumScaleFactor(0.01)
             
-                .glassEffect(.regular.tint(color ?? .white.opacity(0.2)).interactive())
         }
     }
 }
@@ -30,11 +28,11 @@ struct SessionPackageCell: View {
     let session: Session
     
     let playersLayout = [
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
+        GridItem(.adaptive(minimum: 10, maximum: 50)),
+        GridItem(.adaptive(minimum: 10, maximum: 50)),
+        GridItem(.adaptive(minimum: 10, maximum: 50)),
+        GridItem(.adaptive(minimum: 10, maximum: 50)),
+        GridItem(.adaptive(minimum: 10, maximum: 50)),
     ]
     
     let resourcesLayout = [
@@ -64,31 +62,29 @@ struct SessionPackageCell: View {
     }
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12.0, style: .circular)
-                .fill(
-                    RadialGradient(colors: players.map { $0.color }, center: .bottom, startRadius: 0, endRadius: 200)
-//                    AngularGradient(colors: playerColors, center: .center)
-//                    LinearGradient(colors: playerColors, startPoint: .leading, endPoint: .trailing)
-                )
-            VStack {
-                LazyVGrid(columns: playersLayout) {
-                    ForEach(players) { player in
-                        EmojiCircle(emoji: player.emoji, color: player.color)
+        VStack {
+            ZStack {
+                BoxImageBackground(session: session)
+                VStack {
+                    LazyVGrid(columns: playersLayout) {
+                        ForEach(players) { player in
+                            EmojiCircle(emoji: player.emoji, color: player.color)
+                        }
+                    }
+                    Spacer()
+                    LazyVGrid(columns: resourcesLayout) {
+                        ForEach(ressources) { resourceType in
+                            EmojiCircle(emoji: resourceType.emoji, color: nil)
+                        }
                     }
                 }
-                Spacer()
-                LazyVGrid(columns: resourcesLayout) {
-                    ForEach(ressources) { resourceType in
-                        EmojiCircle(emoji: resourceType.emoji, color: nil)
-                    }
-                }
+                .padding(8.0)
+                .frame(maxHeight: .infinity)
             }
-            .padding(8.0)
-            .frame(maxHeight: .infinity)
+            .frame(minWidth: 50, idealWidth: 100, maxWidth: 150, minHeight: 50, idealHeight: 100, maxHeight: 150, alignment: .center)
+            
+            Text(session.name).padding()
         }
-        .frame(minWidth: 50, idealWidth: 100, maxWidth: 150, minHeight: 50, idealHeight: 100, maxHeight: 150, alignment: .center)
-        Text(session.name).foregroundStyle(.cyan)
     }
 }
 

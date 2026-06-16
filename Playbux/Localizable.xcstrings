@@ -247,6 +247,9 @@
         }
       }
     },
+    "Create Image" : {
+
+    },
     "create_session" : {
       "localizations" : {
         "de" : {

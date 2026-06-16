@@ -15,9 +15,9 @@ struct ContentView: View {
     @State private var navigationPath = NavigationPath()
     
     let layout = [
-        GridItem(.fixed(80)),
-        GridItem(.fixed(80)),
-        GridItem(.fixed(80))
+        GridItem(.adaptive(minimum: 160, maximum: 500)),
+        GridItem(.adaptive(minimum: 160, maximum: 500)),
+        GridItem(.adaptive(minimum: 160, maximum: 500)),
     ]
 
     var body: some View {
