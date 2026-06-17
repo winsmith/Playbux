@@ -13,37 +13,30 @@ struct ContentView: View {
     @Query private var sessions: [Session]
 
     @State private var navigationPath = NavigationPath()
-    
-    let layout = [
-        GridItem(.adaptive(minimum: 160, maximum: 500)),
-        GridItem(.adaptive(minimum: 160, maximum: 500)),
-        GridItem(.adaptive(minimum: 160, maximum: 500)),
-    ]
+
+    // A single adaptive item packs as many columns as fit the available width.
+    // `spacing` here sets the gap between columns; the LazyVGrid's own `spacing` sets the gap between rows.
+    private let columns = [GridItem(.adaptive(minimum: 160, maximum: 500), spacing: 16)]
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
             ScrollView {
-                LazyVGrid(columns: layout) {
+                LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(sessions) { session in
-                        SessionPackageCell(session: session)
-                    }
-                }
-            }
-            List {
-                ForEach(sessions) { session in
-                    NavigationLink(value: session) {
-                        HStack {
-                            Text(session.name)
-                            Spacer()
-                            if !session.isStarted {
-                                Text("draft")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                        NavigationLink(value: session) {
+                            SessionPackageCell(session: session)
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                delete(session)
+                            } label: {
+                                Label(String(localized: "delete"), systemImage: "trash")
                             }
                         }
                     }
                 }
-                .onDelete(perform: deleteSessions)
+                .padding()
             }
 #if os(macOS)
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
@@ -56,11 +49,6 @@ struct ContentView: View {
                 }
             }
             .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
                 ToolbarItem {
                     Button(action: addSession) {
                         Label(String(localized: "add_session"), systemImage: "plus")
@@ -78,11 +66,9 @@ struct ContentView: View {
         }
     }
 
-    private func deleteSessions(offsets: IndexSet) {
+    private func delete(_ session: Session) {
         withAnimation {
-            for index in offsets {
-                modelContext.delete(sessions[index])
-            }
+            modelContext.delete(session)
         }
     }
 }

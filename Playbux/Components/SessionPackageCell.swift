@@ -46,7 +46,7 @@ struct SessionPackageCell: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 12) {
             ZStack {
                 BoxImageBackground(session: session)
                 VStack {
