@@ -7,83 +7,73 @@
 
 import SwiftUI
 
-struct EmojiCircle: View {
+/// A circular glass badge displaying a single emoji, optionally tinted.
+private struct EmojiCircle: View {
     let emoji: String
-    let color: Color?
-    
-    var body: some View  {
+    var color: Color? = nil
+
+    private var glass: Glass {
+        guard let color else { return .clear }
+        return .clear.tint(color)
+    }
+
+    var body: some View {
         ZStack {
             Circle()
-                .glassEffect(.regular.tint(color ?? .white.opacity(0.2)).interactive())
+                .glassEffect(glass)
             Text(emoji)
-                .scaledToFill()
+                .font(.largeTitle)
+                .lineLimit(1)
                 .minimumScaleFactor(0.01)
-            
+                .padding(4)
         }
     }
 }
 
-/// Cool little display cell for a session with game name and resource types
+/// Cool little display cell for a session with game name and resource types.
 struct SessionPackageCell: View {
+    /// Maximum number of player/resource badges shown before truncating.
+    private static let maxBadges = 10
+
     let session: Session
-    
-    let playersLayout = [
-        GridItem(.adaptive(minimum: 10, maximum: 50)),
-        GridItem(.adaptive(minimum: 10, maximum: 50)),
-        GridItem(.adaptive(minimum: 10, maximum: 50)),
-        GridItem(.adaptive(minimum: 10, maximum: 50)),
-        GridItem(.adaptive(minimum: 10, maximum: 50)),
-    ]
-    
-    let resourcesLayout = [
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-        GridItem(.adaptive(minimum: 10, maximum: 30)),
-    ]
-    
-    var players: [Player] {
-        return Array(session.players.prefix(10))
+
+    private var players: [Player] {
+        Array(session.players.prefix(Self.maxBadges))
     }
-    
-    var ressources: [ResourceType] {
-        return Array(session.resourceTypes.prefix(10))
+
+    private var resources: [ResourceType] {
+        Array(session.resourceTypes.prefix(Self.maxBadges))
     }
-    
-    var playerColors: [Color] {
-        var colors: [Color] = []
-        for player in players {
-            colors.append(player.color)
-        }
-        colors.append(players[0].color)
-        return colors
-    }
-    
+
     var body: some View {
         VStack {
             ZStack {
                 BoxImageBackground(session: session)
                 VStack {
-                    LazyVGrid(columns: playersLayout) {
+                    HStack {
                         ForEach(players) { player in
                             EmojiCircle(emoji: player.emoji, color: player.color)
+                                .frame(maxWidth: 44, maxHeight: 44)
                         }
                     }
                     Spacer()
-                    LazyVGrid(columns: resourcesLayout) {
-                        ForEach(ressources) { resourceType in
-                            EmojiCircle(emoji: resourceType.emoji, color: nil)
+                    HStack {
+                        ForEach(resources) { resource in
+                            EmojiCircle(emoji: resource.emoji)
+                                .frame(maxWidth: 32, maxHeight: 32)
                         }
                     }
                 }
-                .padding(8.0)
+                .padding(8)
                 .frame(maxHeight: .infinity)
             }
-            .frame(minWidth: 50, idealWidth: 100, maxWidth: 150, minHeight: 50, idealHeight: 100, maxHeight: 150, alignment: .center)
-            
-            Text(session.name).padding()
+            .frame(
+                minWidth: 50, idealWidth: 100, maxWidth: 150,
+                minHeight: 50, idealHeight: 100, maxHeight: 150
+            )
+
+            Text(session.name)
+                .padding()
         }
     }
 }
@@ -91,19 +81,19 @@ struct SessionPackageCell: View {
 #Preview("Cell", traits: .sizeThatFitsLayout) {
     let session = Session(name: "Das Spiel des Siedelns", createdAt: Date())
     session.resourceTypes = [
-        .Root(name: "Holz", emoji: "🪵"),
-        .Root(name: "Stein", emoji: "🪨"),
-        .Root(name: "Schafe", emoji: "🐑"),
-        .Root(name: "Lehm", emoji: "🧱"),
-        .Root(name: "Getreide", emoji: "🌾"),
-        .Root(name: "Schafe", emoji: "🐑"),
-        .Root(name: "Lehm", emoji: "🧱"),
-        .Root(name: "Getreide", emoji: "🌾"),
+        ResourceType(name: "Holz", emoji: "🪵"),
+        ResourceType(name: "Stein", emoji: "🪨"),
+        ResourceType(name: "Schafe", emoji: "🐑"),
+        ResourceType(name: "Lehm", emoji: "🧱"),
+        ResourceType(name: "Getreide", emoji: "🌾"),
+        ResourceType(name: "Schafe", emoji: "🐑"),
+        ResourceType(name: "Lehm", emoji: "🧱"),
+        ResourceType(name: "Getreide", emoji: "🌾"),
     ]
     session.players = [
-        .init(name: "Onkidonk", emoji: "🏳️‍🌈", displayOrder: 1, colorHex: "#da0a57"),
-        .init(name: "ColorHex", emoji: "🧙", displayOrder: 2, colorHex: "#93668c"),
-        .init(name: "Lol Carla", emoji: "🫎", displayOrder: 3, colorHex: "#bb90d9"),
+        Player(name: "Onkidonk", emoji: "🏳️‍🌈", displayOrder: 1, colorHex: "#da0a57"),
+        Player(name: "ColorHex", emoji: "🧙", displayOrder: 2, colorHex: "#93668c"),
+        Player(name: "Lol Carla", emoji: "🫎", displayOrder: 3, colorHex: "#bb90d9"),
     ]
     return SessionPackageCell(session: session)
 }
