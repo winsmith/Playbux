@@ -13,6 +13,7 @@ struct ContentView: View {
     @Query private var sessions: [Session]
 
     @State private var navigationPath = NavigationPath()
+    @State private var sessionBeingCreated: Session?
 
     // A single adaptive item packs as many columns as fit the available width.
     // `spacing` here sets the gap between columns; the LazyVGrid's own `spacing` sets the gap between rows.
@@ -23,8 +24,20 @@ struct ContentView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(sessions) { session in
-                        NavigationLink(value: session) {
-                            SessionPackageCell(session: session)
+                        Group {
+                            // Started games open their detail view; drafts re-open the
+                            // creation sheet so they can be finished.
+                            if session.isStarted {
+                                NavigationLink(value: session) {
+                                    SessionPackageCell(session: session)
+                                }
+                            } else {
+                                Button {
+                                    sessionBeingCreated = session
+                                } label: {
+                                    SessionPackageCell(session: session)
+                                }
+                            }
                         }
                         .buttonStyle(.plain)
                         .contextMenu {
@@ -42,11 +55,10 @@ struct ContentView: View {
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
 #endif
             .navigationDestination(for: Session.self) { session in
-                if session.isStarted {
-                    SessionView(session: session)
-                } else {
-                    CreateSessionView(session: session)
-                }
+                SessionView(session: session)
+            }
+            .sheet(item: $sessionBeingCreated) { session in
+                CreateSessionView(session: session)
             }
             .toolbar {
                 ToolbarItem {
@@ -59,11 +71,9 @@ struct ContentView: View {
     }
 
     private func addSession() {
-        withAnimation {
-            let newSession = Session(name: String(localized: "new_game"))
-            modelContext.insert(newSession)
-            navigationPath.append(newSession)
-        }
+        let newSession = Session(name: String(localized: "new_game"))
+        modelContext.insert(newSession)
+        sessionBeingCreated = newSession
     }
 
     private func delete(_ session: Session) {

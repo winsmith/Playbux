@@ -13,19 +13,19 @@ private struct EmojiCircle: View {
     var color: Color? = nil
 
     private var glass: Glass {
-        guard let color else { return .clear }
-        return .clear.tint(color)
+        return .regular
+        // guard let color else { return .clear }
+        // return .clear.tint(color)
     }
 
     var body: some View {
         ZStack {
-            Circle()
-                .glassEffect(glass)
             Text(emoji)
                 .font(.largeTitle)
                 .lineLimit(1)
                 .minimumScaleFactor(0.01)
-                .padding(4)
+                .padding(8)
+                .glassEffect(glass)
         }
     }
 }
@@ -50,17 +50,21 @@ struct SessionPackageCell: View {
             ZStack {
                 BoxImageBackground(session: session)
                 VStack {
-                    HStack {
-                        ForEach(players) { player in
-                            EmojiCircle(emoji: player.emoji, color: player.color)
-                                .frame(maxWidth: 44, maxHeight: 44)
+                    GlassEffectContainer(spacing: 20.0) {
+                        HStack {
+                            ForEach(players) { player in
+                                EmojiCircle(emoji: player.emoji, color: player.color)
+                                    .frame(maxWidth: 44, maxHeight: 44)
+                            }
                         }
                     }
                     Spacer()
-                    HStack {
-                        ForEach(resources) { resource in
-                            EmojiCircle(emoji: resource.emoji)
-                                .frame(maxWidth: 32, maxHeight: 32)
+                    GlassEffectContainer(spacing: 20.0) {
+                        HStack {
+                            ForEach(resources) { resource in
+                                EmojiCircle(emoji: resource.emoji)
+                                    .frame(maxWidth: 32, maxHeight: 32)
+                            }
                         }
                     }
                 }

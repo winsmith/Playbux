@@ -1,60 +1,42 @@
 import SwiftUI
+import Combine
 import ImageIO
-import ImagePlayground
 import UniformTypeIdentifiers
 import CryptoKit
 import SwiftData
 
+/// Displays the cached box image for a session, or a neutral placeholder when none exists.
+/// Image *generation* lives in the session setup flow — see `CreateSessionView`.
 struct BoxImageBackground: View {
 
-    @State var generatedImage: CGImage?
-    @State private var isPresentingPlayground = false
+    @State private var generatedImage: CGImage?
     let session: Session
 
-    var prompt: String {
-        "'\(session.name)' Board game" // . No Text. The game has these resources: \(session.resourceTypes.map { $0.name + ", " } )"
-    }
-
-
     var body: some View {
-        VStack {
-            if let image = generatedImage {
-                Image(image, scale: 1.0, label: Text(session.name))
+        Group {
+            if let generatedImage {
+                Image(generatedImage, scale: 1.0, label: Text(session.name))
                     .resizable()
                     .scaledToFill()
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
             } else {
-                ZStack {
-                    Rectangle()
-                        .fill(Color.gray)
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                    Button {
-                        isPresentingPlayground = true
-                    } label: {
-                        Label("Create Image", systemImage: "sparkles")
-                    }
-                }
+                Rectangle()
+                    .fill(.gray)
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .task(id: session.persistentModelID) {
             generatedImage = BoxImageCache.image(for: session)
         }
-        .imagePlaygroundSheet(isPresented: $isPresentingPlayground, concept: prompt) { url in
-            guard let image = loadCGImage(from: url) else { return }
-            generatedImage = image
-            BoxImageCache.store(image, for: session)
+        .onReceive(NotificationCenter.default.publisher(for: .boxImageDidChange)) { notification in
+            // Reload only when the changed image belongs to this session.
+            guard notification.object as? PersistentIdentifier == session.persistentModelID else { return }
+            generatedImage = BoxImageCache.image(for: session)
         }
-    }
-
-    private func loadCGImage(from url: URL) -> CGImage? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-        return CGImageSourceCreateImageAtIndex(source, 0, nil)
     }
 }
 
 /// On-disk cache for generated box images so they survive app restarts.
-private enum BoxImageCache {
+enum BoxImageCache {
 
     static func image(for session: Session) -> CGImage? {
         let url = fileURL(for: session)
@@ -73,6 +55,9 @@ private enum BoxImageCache {
         ) else { return }
         CGImageDestinationAddImage(destination, image, nil)
         CGImageDestinationFinalize(destination)
+
+        // Let any visible views (e.g. the session grid) know to reload this session's image.
+        NotificationCenter.default.post(name: .boxImageDidChange, object: session.persistentModelID)
     }
 
     /// A stable, restart-safe filename derived from the session's immutable creation date,
@@ -90,4 +75,9 @@ private enum BoxImageCache {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
     }
+}
+
+extension Notification.Name {
+    /// Posted with the session's `PersistentIdentifier` as `object` whenever its box image is generated or replaced.
+    static let boxImageDidChange = Notification.Name("BoxImageDidChange")
 }

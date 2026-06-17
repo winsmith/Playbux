@@ -165,6 +165,38 @@
         }
       }
     },
+    "box_image" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielbild"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Box Image"
+          }
+        }
+      }
+    },
+    "box_image_explainer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzeuge ein Spielbild aus dem Namen und den Resourcen deines Spiels. Füge zuerst Resourcen hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate box art from your game's name and resources. Add resources first."
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "de" : {
@@ -247,8 +279,21 @@
         }
       }
     },
-    "Create Image" : {
-
+    "create_image" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Image"
+          }
+        }
+      }
     },
     "create_session" : {
       "localizations" : {
