@@ -44,20 +44,28 @@ enum BoxImageCache {
         return CGImageSourceCreateImageAtIndex(source, 0, nil)
     }
 
-    static func store(_ image: CGImage, for session: Session) {
+    static func store(_ image: CGImage, for session: Session) async {
         let url = fileURL(for: session)
-        try? FileManager.default.removeItem(at: url)
-        guard let destination = CGImageDestinationCreateWithURL(
-            url as CFURL,
-            UTType.png.identifier as CFString,
-            1,
-            nil
-        ) else { return }
-        CGImageDestinationAddImage(destination, image, nil)
-        CGImageDestinationFinalize(destination)
+        let sessionID = session.persistentModelID
+
+        // Perform file I/O on a background thread to avoid priority inversion
+        // when the caller is on the main (user-interactive) thread.
+        await Task.detached(priority: .utility) {
+            try? FileManager.default.removeItem(at: url)
+            guard let destination = CGImageDestinationCreateWithURL(
+                url as CFURL,
+                UTType.png.identifier as CFString,
+                1,
+                nil
+            ) else { return }
+            CGImageDestinationAddImage(destination, image, nil)
+            CGImageDestinationFinalize(destination)
+        }.value
 
         // Let any visible views (e.g. the session grid) know to reload this session's image.
-        NotificationCenter.default.post(name: .boxImageDidChange, object: session.persistentModelID)
+        await MainActor.run {
+            NotificationCenter.default.post(name: .boxImageDidChange, object: sessionID)
+        }
     }
 
     /// A stable, restart-safe filename derived from the session's immutable creation date,

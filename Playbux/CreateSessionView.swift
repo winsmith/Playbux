@@ -128,7 +128,7 @@ struct CreateSessionView: View {
             .imagePlaygroundSheet(isPresented: $isPresentingPlayground, concepts: imageConcepts) { url in
                 guard let image = loadCGImage(from: url) else { return }
                 boxImage = image
-                BoxImageCache.store(image, for: session)
+                Task { await BoxImageCache.store(image, for: session) }
             }
             .imagePlaygroundGenerationStyle(.illustration)
         }
